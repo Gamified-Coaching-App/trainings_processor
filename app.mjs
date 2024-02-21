@@ -18,6 +18,12 @@ app.post('/update/garmin', (req, res) => {
     });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    // Respond with 200 OK and a status message
+    res.status(200).send({ status: 'Healthy' });
+});
+
 // Listen on port 80
 app.listen(80, () => {
     console.log('Server running on port 80');
