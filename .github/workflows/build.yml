@@ -1,0 +1,33 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main  # Set to your default branch
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write  # Required for GITHUB_TOKEN authentication
+
+    steps:
+    - name: Check Out Repo
+      uses: actions/checkout@v2
+      
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: GabrielOppermann
+        password: ${{ secrets.DOCKER_PAT }}
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .  # Assumes your Dockerfile is in the root directory
+        file: ./Dockerfile  # Update this if your Dockerfile is located elsewhere
+        push: true
+        tags: ghcr.io/Gamified-Coaching-App/training_processing_api:v1.0  # Replace with your org, repo, and tag
