@@ -4,7 +4,7 @@ import { garmin_handler } from './garmin_handler.mjs';
 const app = express();
 app.use(express.json()); 
 
-// Define a POST endpoint that uses the garmin_handler
+// POST endpoint that uses the garmin_handler
 app.post('/update/garmin', (req, res) => {
     // Immediately respond to the request
     res.status(200).send({ message: "Processing started" });

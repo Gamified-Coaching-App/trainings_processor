@@ -1,11 +1,15 @@
-// garmin_handler.mjs
-import AWS from 'aws-sdk';
+// Import the necessary AWS SDK v3 clients and commands
+import { EventBridgeClient, PutEventsCommand } from "@aws-sdk/client-eventbridge";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import https from 'https';
 import { TrainingSessionGarmin } from './training_session.mjs';
 
-AWS.config.update({region: 'eu-west-2'}); 
-const event_bridge = new AWS.EventBridge({ apiVersion: '2015-10-07' });
-const dynamo_db = new AWS.DynamoDB.DocumentClient();
+// Initialize the AWS SDK v3 clients
+const event_bridge_client = new EventBridgeClient({ region: 'eu-west-2' });
+const dynamodb_client = new DynamoDBClient({ region: 'eu-west-2' });
+const dynamodb_doc_client = DynamoDBDocumentClient.from(dynamodb_client);
+
 const user_id_cache = {};
 
 async function get_user_id(user_id_garmin) {
@@ -40,8 +44,8 @@ async function get_user_id(user_id_garmin) {
     });
 }
 
+// The main handler function
 async function garmin_handler(request_body) {
-    // No need to try-catch for parsing, as Express already parsed the body
     if (!request_body.activityDetails || !Array.isArray(request_body.activityDetails)) {
         console.error("Invalid request format: 'activityDetails' is missing or not an array");
         return {
@@ -67,20 +71,22 @@ async function garmin_handler(request_body) {
 
         console.log("User ID:", user_id);
         const session = new TrainingSessionGarmin(activity, user_id);
-        const event_params = session.prepare_event_bridge_params();
-        const dynamo_params_log = session.prepare_dynamo_db_params('trainings_log');
-        const dynamo_params_aggregates = session.prepare_dynamo_db_aggregate_params('trainings_aggregates');
 
         try {
-            await event_bridge.putEvents(event_params).promise();
+            // Sending events to EventBridge
+            const event_bridge_params = session.prepare_event_bridge_params();
+            await event_bridge_client.send(new PutEventsCommand(event_bridge_params));
             console.log("Event published to EventBridge successfully.");
 
-            await dynamo_db.put(dynamo_params_log).promise();
+            // Putting an item into DynamoDB
+            const dynamodb_params_log = session.prepare_dynamo_db_log_params('trainings_log');
+            await dynamodb_doc_client.send(new PutCommand(dynamodb_params_log));
             console.log("Data inserted into DynamoDB trainings log successfully.");
 
-            await dynamo_db.update(dynamo_params_aggregates).promise();
+            // Updating an item in DynamoDB
+            const dynamodb_params_aggregate = session.prepare_dynamo_db_aggregate_params('trainings_aggregates');
+            await dynamodb_doc_client.send(new UpdateCommand(dynamodb_params_aggregate));
             console.log("Data inserted into DynamoDB trainings aggregates successfully.");
-
         } catch (error) {
             console.error("Error processing data:", error);
             // Consider how you want to handle partial failures within the loop
