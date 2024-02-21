@@ -30,4 +30,4 @@ jobs:
         context: .  # Assumes your Dockerfile is in the root directory
         file: ./Dockerfile  # Update this if your Dockerfile is located elsewhere
         push: true
-        tags: ghcr.io/Gamified-Coaching-App/training_processing_api:v1.0  # Replace with your org, repo, and tag
+        tags: ghcr.io/gamified-coaching-app/training_processing_api:v1.0  # Replace with your org, repo, and tag
