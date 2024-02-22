@@ -2,7 +2,7 @@ import express from 'express';
 import { garmin_handler } from './garmin_handler.mjs';
 
 const app = express();
-app.use(express.json({ limit: '1000mb' }));
+app.use(express.json({ limit: '200mb' }));
 
 // POST endpoint that uses the garmin_handler
 app.post('/update/garmin', (req, res) => {

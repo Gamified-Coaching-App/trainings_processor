@@ -85,6 +85,7 @@ const ActivityType = {
                   activity_name: this.activity_name, // 'activity_name' DynamoDB column header
                   timestamp_local: this.timestamp_local, // 'timestamp_local' DynamoDB column header
                   points_gained: JSON.stringify(this.points_gained), // 'points_gained' DynamoDB column header, storing as JSON string
+                  display_frontend_notification: true,
                   activity_type: this.activity_type, // 'activity_type' DynamoDB column header
                   average_heart_rate_in_bpm: this.average_heart_rate_in_bpm, // 'average_heart_rate_in_bpm' DynamoDB column header
                   average_speed_km_h: this.average_speed_km_h, // 'average_speed_km_h' DynamoDB column header
