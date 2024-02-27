@@ -83,6 +83,7 @@ const ActivityType = {
                   user_id: this.user_id, // 'user_id' DynamoDB column header
                   session_id: this.session_id.toString(), // 'session_id' DynamoDB column header
                   activity_name: this.activity_name, // 'activity_name' DynamoDB column header
+                  duration_in_seconds: this.duration_in_seconds,
                   timestamp_local: this.timestamp_local, // 'timestamp_local' DynamoDB column header
                   points_gained: JSON.stringify(this.points_gained), // 'points_gained' DynamoDB column header, storing as JSON string
                   display_frontend_notification: true,

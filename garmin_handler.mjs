@@ -69,9 +69,11 @@ async function garmin_handler(request_body) {
             console.log("Found user_id in cache");
         }
 
-        console.log("User ID:", user_id);
+        console.log("Blaze User ID:", user_id);
+
         const session = new TrainingSessionGarmin(activity, user_id);
 
+        console.log("Blaze User ID in Session Object:", session.user_id);
         try {
             // Sending events to EventBridge
             const event_bridge_params = session.prepare_event_bridge_params();
