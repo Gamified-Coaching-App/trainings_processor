@@ -10,9 +10,11 @@ const ActivityType = {
           this.user_id = user_id;
           this.session_id = session_id;
           this.activity_name = activity_name;
-          this.timestamp_local = timestamp_local;
+          this.timestamp_local_seconds = timestamp_local;
+          this.timestamp_local = this.format_timestamp(timestamp_local);
           this.activity_type = activity_type;
           this.duration_in_seconds = duration_in_seconds;
+          this.duration = this.seconds_to_hh_mm_ss(duration_in_seconds),
           this.points_gained = this.calculate_points(distance_meters_total);
           this.average_heart_rate_in_bpm = average_heart_rate_in_bpm;
           this.average_speed_km_h = average_speed_km_h;
@@ -61,7 +63,7 @@ const ActivityType = {
                       DetailType: 'activity_processed',
                       Detail: JSON.stringify({
                           user_id: this.user_id,
-                          timestamp_local: this.timestamp_local,
+                          timestamp_local: this.timestamp_local_seconds,
                           session_id: this.session_id,
                           activity_type: this.activity_type,
                           distance_in_meters: this.distance_meters_total,
@@ -84,7 +86,7 @@ const ActivityType = {
                   user_id: this.user_id, // 'user_id' DynamoDB column header
                   session_id: this.session_id.toString(), // 'session_id' DynamoDB column header
                   activity_name: this.activity_name, // 'activity_name' DynamoDB column header
-                  duration_in_seconds: this.duration_in_seconds,
+                  duration: this.duration,
                   timestamp_local: this.timestamp_local, // 'timestamp_local' DynamoDB column header
                   points_gained: JSON.stringify(this.points_gained), // 'points_gained' DynamoDB column header, storing as JSON string
                   display_frontend_notification: true,
@@ -109,6 +111,39 @@ const ActivityType = {
           };
           return params;
       }
+
+      format_timestamp(unix_timestamp) {
+        // Create a Date object from the UNIX timestamp
+        const date = new Date(unix_timestamp * 1000); // JavaScript requires milliseconds
+        
+        // Format each component, ensuring two digits where necessary
+        const year = date.getUTCFullYear();
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+        
+        // Concatenate components with ':' as the delimiter
+        const formated_timestamp = `${year}-${month}-${day}-${hours}:${minutes}:${seconds}`;
+        return formated_timestamp;
+    }
+
+    seconds_to_hh_mm_ss(seconds) {
+        // Calculate hours, minutes, and seconds
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remaining_seconds = seconds % 60;
+    
+        // Pad with zeros to ensure two-digit format
+        const hours_str = hours.toString().padStart(2, '0');
+        const minutes_str = minutes.toString().padStart(2, '0');
+        const seconds_str = remaining_seconds.toString().padStart(2, '0');
+    
+        // Concatenate into HH:MM:SS format
+        return `${hours_str}:${minutes_str}:${seconds_str}`;
+    }
+    
   
       prepare_dynamo_db_aggregate_params(table_name) {
           const { year, week } = this.get_year_week_from_timestamp(this.timestamp_local);
