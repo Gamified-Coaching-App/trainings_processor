@@ -46,10 +46,11 @@ const ActivityType = {
       }
   
       calculate_points(distance_meters_total) {
+        let points = 0;
           if (this.activity_type === ActivityType.RUNNING) {
-            const points = this.round(distance_meters_total/100, 0); // Ensuring points are rounded to nearest whole number if needed
-          } else { const points = 0}
-            return {
+            points = this.round(distance_meters_total/100, 0); // Ensuring points are rounded to nearest whole number if needed
+          }
+        return {
               endurance: points,
               total: points
           };
