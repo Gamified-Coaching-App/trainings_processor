@@ -147,7 +147,7 @@ const ActivityType = {
     
   
       prepare_dynamo_db_aggregate_params(table_name) {
-          const { year, week } = this.get_year_week_from_timestamp(this.timestamp_local);
+          const { year, week } = this.get_year_week_from_timestamp(this.timestamp_local_seconds);
           // Zero-pad the week number for lexical comparison purposes if necessary
           const week_string = week < 10 ? `0${week}` : `${week}`;
           const user_activity_key = `${this.user_id}#${this.activity_type}`;
