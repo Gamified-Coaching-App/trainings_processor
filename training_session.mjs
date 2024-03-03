@@ -171,14 +171,16 @@ const ActivityType = {
       }
   
       get_year_week_from_timestamp(timestamp) {
-          const date = new Date(timestamp * 1000); // Convert UNIX timestamp to milliseconds
-          const year = date.getFullYear();
-          const first_day_of_year = new Date(date.getFullYear(), 0, 1);
-          const past_days_of_year = (date - first_day_of_year) / 86400000;
-          const week = Math.ceil((past_days_of_year + first_day_of_year.getDay() + 1) / 7);
-          
-          return { year, week };
-      }
+        const date = new Date(timestamp * 1000); // Convert UNIX timestamp to milliseconds
+        const year = date.getFullYear();
+        const first_day_of_year = new Date(date.getFullYear(), 0, 1);
+        const past_days_of_year = (date - first_day_of_year) / 86400000;
+        
+        // The adjustment removes the "+ 1" and reconsiders the role of getDay() in the calculation.
+        const week = Math.ceil((past_days_of_year + first_day_of_year.getDay()) / 7);
+    
+        return { year, week };
+    }
   }
   
   
