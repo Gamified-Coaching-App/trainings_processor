@@ -152,7 +152,7 @@ const ActivityType = {
           const week_string = week < 10 ? `0${week}` : `${week}`;
           const user_activity_key = `${this.user_id}#${this.activity_type}`;
           const year_week_key = `${year}#${week_string}`;
-      
+        console.log("Year-Week Key: ", year_week_key);
           // Adjusting the parameters for DynamoDB to match the proposed schema
           const params = {
               TableName: table_name,
@@ -172,14 +172,27 @@ const ActivityType = {
   
       get_year_week_from_timestamp(timestamp) {
         const date = new Date(timestamp * 1000); // Convert UNIX timestamp to milliseconds
-        const year = date.getFullYear();
-        const first_day_of_year = new Date(date.getFullYear(), 0, 1);
-        const past_days_of_year = (date - first_day_of_year) / 86400000;
+        date.setHours(0, 0, 0, 0); // Normalize the time part
         
-        // The adjustment removes the "+ 1" and reconsiders the role of getDay() in the calculation.
-        const week = Math.ceil((past_days_of_year + first_day_of_year.getDay()) / 7);
+        // ISO 8601 week number calculation requires finding the nearest Thursday
+        const dayOfWeek = date.getDay();
+        // Shift the date to the nearest Thursday to align with ISO 8601's requirement
+        // that the first week of the year includes January 4th.
+        date.setDate(date.getDate() - dayOfWeek + 4);
     
-        return { year, week };
+        // Calculate the first day of this year
+        const yearStart = new Date(date.getFullYear(), 0, 1);
+    
+        // Correct the yearStart in case we're dealing with a week belonging to the previous year
+        if (date < yearStart) {
+            yearStart.setFullYear(yearStart.getFullYear() - 1);
+        }
+        yearStart.setDate(yearStart.getDate() - yearStart.getDay() + 4); // Align year start to the first Thursday
+    
+        // Calculate full weeks to the nearest Thursday
+        const week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+
+        return { year: date.getFullYear(), week };
     }
   }
   
