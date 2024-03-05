@@ -13,7 +13,7 @@ describe('TrainingSessionGarmin Class', () => {
 
   describe('prepare_event_bridge_params', () => {
     it('returns correct EventBridge parameters', () => {
-      // Adjusted data object to ensure activityId is correctly set
+      // Test for the key functionality of the prepare_event_bridge_params method
       const data = {
         activityId: 123, 
         summary: {
