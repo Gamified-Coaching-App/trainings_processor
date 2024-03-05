@@ -6,7 +6,24 @@ on:
       - main  # Set to your default branch
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
   build_and_push:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,7 +44,7 @@ jobs:
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: .  # Assumes your Dockerfile is in the root directory
-        file: ./Dockerfile  # Update this if your Dockerfile is located elsewhere
+        context: .  # Assumes the Dockerfile is in the root directory
+        file: ./Dockerfile  
         push: true
-        tags: ghcr.io/gamified-coaching-app/training_processing_api:v1.0  # Replace with your org, repo, and tag
+        tags: ghcr.io/gamified-coaching-app/training_processing_api:v1.0  
