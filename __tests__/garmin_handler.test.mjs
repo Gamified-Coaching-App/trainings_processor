@@ -54,8 +54,8 @@ jest.mock('https', () => ({
     };
   });
 
-
-  const mockRequestBody = {
+// example request body
+const mockRequestBody = {
     activityDetails: [
         {
             userId: 'garminUser123', // Simulate a Garmin user ID
@@ -67,42 +67,83 @@ jest.mock('https', () => ({
         },
     ]
 };
-describe('Garmin Handler Tests', () => {
-      
-  it('should call https, evenbridge and DynamoDBDocumentClient', async () => {
 
-    const response = await garmin_handler(mockRequestBody);
-
-    expect(response).toEqual({
-      statusCode: 200,
-      body: JSON.stringify({ message: "Processed successfully" })
+describe('Garmin Handler Functionality', () => {
+    // Testing the handler's response to a valid request
+    it('responds successfully to valid activity details', async () => {
+      const response = await garmin_handler(mockRequestBody);
+  
+      expect(response).toEqual({
+        statusCode: 200,
+        body: JSON.stringify({ message: "Processed successfully" })
+      });
     });
-
-    // Verify interactions with mocked dependencies
-    expect(https.get).toHaveBeenCalled();
-    expect(EventBridgeClient).toHaveBeenCalled(); // Verifies an instance of the EventBridgeClient was created
-    expect(PutEventsCommand).toHaveBeenCalled();
-    expect(DynamoDBDocumentClient.from).toHaveBeenCalled();
-  });
-  it('TrainingSessionGarmin called correctly', async () => {
-
-    const response = await garmin_handler(mockRequestBody);
-
-    expect(response).toEqual({
-      statusCode: 200,
-      body: JSON.stringify({ message: "Processed successfully" })
+  
+    // Testing interaction with external dependencies for a valid request
+    it('interacts correctly with external services on valid activity details', async () => {
+      await garmin_handler(mockRequestBody);
+  
+      // Verifies interaction with https module to fetch user ID
+      expect(https.get).toHaveBeenCalled();
+      // Checks if EventBridgeClient and commands were utilized
+      expect(EventBridgeClient).toHaveBeenCalled();
+      expect(PutEventsCommand).toHaveBeenCalled();
+      // Verifies DynamoDB DocumentClient interactions
+      expect(DynamoDBDocumentClient.from).toHaveBeenCalled();
     });
-
-    expect(TrainingSessionGarmin).toHaveBeenCalled();
-
-    //console.log('Mock function calls:', TrainingSessionGarmin.mock.calls);
-    //console.log('Mock instances:', TrainingSessionGarmin.mock.instances);
-
-    // Verify that the instance methods were called
-    const mockMethodsUsed = TrainingSessionGarmin.mock.results[0].value;
-    expect(mockMethodsUsed.prepare_event_bridge_params).toHaveBeenCalled();
-    expect(mockMethodsUsed.prepare_dynamo_db_log_params).toHaveBeenCalled();
-    expect(mockMethodsUsed.prepare_dynamo_db_aggregate_params).toHaveBeenCalled();
   });
   
+describe('TrainingSessionGarmin Class Behavior', () => {
+    beforeEach(async () => {
+      await garmin_handler(mockRequestBody);
+    });
+  
+    it('is instantiated correctly for each activity detail', () => {
+      expect(TrainingSessionGarmin).toHaveBeenCalled();
+    });
+  
+    it('calls instance methods as expected for event preparation', () => {
+      const mockMethodsUsed = TrainingSessionGarmin.mock.results[0].value;
+      // Verify that each method required for preparing the event data is called
+      expect(mockMethodsUsed.prepare_event_bridge_params).toHaveBeenCalled();
+      expect(mockMethodsUsed.prepare_dynamo_db_log_params).toHaveBeenCalled();
+      expect(mockMethodsUsed.prepare_dynamo_db_aggregate_params).toHaveBeenCalled();
+    });
+  });
+  
+
+describe('Error testing', () => {
+
+  it('should return error for invalid request body', async () => {
+    const invalidRequestBody = {
+      invalidKey: []
+    };
+  
+    const response = await garmin_handler(invalidRequestBody);
+  
+    expect(response).toEqual({
+      statusCode: 400,
+      body: JSON.stringify({ message: "Invalid request format" })
+    });
+  });
+    it('should return error for missing userId', async () => {
+        const invalidRequestBody = {
+        activityDetails: [
+            {
+            activityType: 'Cycling',
+            startTime: '2023-03-01T12:00:00Z',
+            duration: 3600,
+            distance: 15000,
+            calories: 500,
+            },
+        ]
+        };
+    
+        const response = await garmin_handler(invalidRequestBody);
+    
+        expect(response).toEqual({
+        statusCode: 200,
+        body: JSON.stringify({ message: "Processed successfully" })
+        });
+    });  
 });
