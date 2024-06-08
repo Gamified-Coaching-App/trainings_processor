@@ -122,7 +122,7 @@ Resources:
         Version: !GetAtt EC2LaunchTemplate.LatestVersionNumber
       VPCZoneIdentifier:
         - !Ref PublicSubnetOne
-        - !Ref PublicSubnetTwo
+        #- !Ref PublicSubnetTwo
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -130,7 +130,7 @@ Resources:
       Type: application
       Subnets:
         - !Ref PublicSubnetOne
-        - !Ref PublicSubnetTwo
+        #- !Ref PublicSubnetTwo
 
   Certificate:
     Type: AWS::CertificateManager::Certificate
