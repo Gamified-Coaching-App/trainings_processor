@@ -50,7 +50,7 @@ jobs:
         tags: ghcr.io/gamified-coaching-app/training_processing_api:v1.0  # Replace with your org, repo, and tag
   
   deploy_stack:
-    needs: test
+    needs: build_and_push
     runs-on: ubuntu-latest
     steps:
     - name: Configure AWS credentials
