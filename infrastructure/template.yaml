@@ -134,11 +134,19 @@ Resources:
         - !Ref PublicSubnetOne
         - !Ref PublicSubnetTwo
 
+  ECSTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      TargetType: ip
+
   HTTPSListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
       - LoadBalancer
-      - TargetGroup
+      - ECSTargetGroup
     Properties:
       DefaultActions:
         - Type: forward
@@ -148,14 +156,6 @@ Resources:
       Protocol: HTTPS
       Certificates:
         - CertificateArn: "arn:aws:acm:eu-west-2:590183778243:certificate/14647f6d-bd8f-44cf-ad49-fe24ac123ab4"
-
-  ECSTargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Port: 80
-      Protocol: HTTP
-      VpcId: !Ref VPC
-      TargetType: ip
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
