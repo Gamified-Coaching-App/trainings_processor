@@ -177,19 +177,19 @@ Resources:
               HostPort: 80
 
   ECSService:
-  Type: AWS::ECS::Service
-  Properties:
-    Cluster: !Ref ECSCluster
-    DesiredCount: 1
-    TaskDefinition: !Ref TaskDefinition
-    LaunchType: EC2
-    NetworkConfiguration:
-      AwsvpcConfiguration:
-        Subnets:
-          - !Ref PublicSubnetOne
-          - !Ref PublicSubnetTwo
-        AssignPublicIp: "ENABLED"
-    LoadBalancers:
-      - ContainerName: training-processing-container
-        ContainerPort: 80
-        TargetGroupArn: !Ref ECSTargetGroup
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      DesiredCount: 1
+      TaskDefinition: !Ref TaskDefinition
+      LaunchType: EC2
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets:
+            - !Ref PublicSubnetOne
+            - !Ref PublicSubnetTwo
+          AssignPublicIp: "ENABLED"
+      LoadBalancers:
+        - ContainerName: training-processing-container
+          ContainerPort: 80
+          TargetGroupArn: !Ref ECSTargetGroup
