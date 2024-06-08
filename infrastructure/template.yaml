@@ -134,15 +134,9 @@ Resources:
         - !Ref PublicSubnetOne
         - !Ref PublicSubnetTwo
 
-  Certificate:
-    Type: AWS::CertificateManager::Certificate
-    DeletionPolicy: Retain
-    Properties:
-      DomainName: "www.gamified-coaching-app-222.co.uk"
-      ValidationMethod: DNS
-
   HTTPSListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: [LoadBalancer, TargetGroup]
     Properties:
       DefaultActions:
         - Type: forward
