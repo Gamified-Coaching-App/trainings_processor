@@ -136,7 +136,9 @@ Resources:
 
   HTTPSListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
-    DependsOn: [LoadBalancer, TargetGroup]
+    DependsOn:
+      - LoadBalancer
+      - TargetGroup
     Properties:
       DefaultActions:
         - Type: forward
