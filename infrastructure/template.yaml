@@ -65,7 +65,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: TrainingsProcessor
+      ClusterName: TrainingsProcessorCluster
 
   EC2InstanceRole:
     Type: AWS::IAM::Role
