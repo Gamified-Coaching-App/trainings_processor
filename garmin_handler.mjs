@@ -89,9 +89,9 @@ async function garmin_handler(request_body) {
             const dynamodb_params_aggregate = session.prepare_dynamo_db_aggregate_params('trainings_aggregates');
             await dynamodb_doc_client.send(new UpdateCommand(dynamodb_params_aggregate));
             console.log("Data inserted into DynamoDB trainings aggregates successfully.");
+
         } catch (error) {
             console.error("Error processing data:", error);
-            // Consider how you want to handle partial failures within the loop
         }
     }
 
