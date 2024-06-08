@@ -148,7 +148,7 @@ Resources:
       Port: 443
       Protocol: HTTPS
       Certificates:
-        - CertificateArn: !Ref Certificate
+        - CertificateArn: "arn:aws:acm:eu-west-2:590183778243:certificate/14647f6d-bd8f-44cf-ad49-fe24ac123ab4"
 
   ECSTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
