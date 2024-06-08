@@ -134,6 +134,7 @@ Resources:
 
   Certificate:
     Type: AWS::CertificateManager::Certificate
+    DeletionPolicy: Retain
     Properties:
       DomainName: "www.gamified-coaching-app-222.co.uk"
       ValidationMethod: DNS
