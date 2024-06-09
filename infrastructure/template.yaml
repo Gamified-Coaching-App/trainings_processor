@@ -187,7 +187,6 @@ Resources:
           Subnets:
             - !Ref PublicSubnetOne
             - !Ref PublicSubnetTwo
-          AssignPublicIp: "ENABLED"
       LoadBalancers:
         - ContainerName: training-processing-container
           ContainerPort: 80
