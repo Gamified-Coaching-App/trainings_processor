@@ -2,10 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template to deploy Docker container in ECS using EC2 instances and VPC, with HTTPS support.
 
 Parameters:
-  ExistingSecurityGroup:
-    Description: The existing security group ID for the Load Balancer.
-    Type: String
-    Default: sg-0920e45f2eae4155a
+  # ExistingSecurityGroup:
+  #   Description: The existing security group ID for the Load Balancer.
+  #   Type: String
+  #   Default: sg-0920e45f2eae4155a
     
   LatestAmiId:
     Description: The latest AMI ID for ECS-optimized Amazon Linux 2.
