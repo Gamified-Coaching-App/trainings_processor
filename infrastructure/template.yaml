@@ -200,6 +200,11 @@ Resources:
           PortMappings:
             - ContainerPort: 80
               HostPort: 80
+              
+  TrainingECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: TrainingsProcessorCluster
 
   TrainingECSService:
     Type: AWS::ECS::Service
