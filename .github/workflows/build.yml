@@ -5,6 +5,9 @@ on:
     branches:
       - main  # Set to your default branch
 
+env:
+  IMAGE_TAG: ghcr.io/gamified-coaching-app/training_processing_api:v1.0
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -44,10 +47,10 @@ jobs:
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: .  # Assumes the Dockerfile is in the root directory
+        context: .  
         file: ./Dockerfile  
         push: true
-        tags: ghcr.io/gamified-coaching-app/coaching_processor:v1.0  # Replace with your org, repo, and tag
+        tags: ${{ env.IMAGE_TAG }} 
   
   deploy_stack:
     needs: build_and_push
@@ -69,5 +72,5 @@ jobs:
           --template-file infrastructure/template.yaml \
           --stack-name TrainingsProcessorStack \
           --capabilities CAPABILITY_NAMED_IAM \
-          --parameter-overrides DockerImageTag=ghcr.io/gamified-coaching-app/coaching_processor:v1.0
+          --parameter-overrides TrainingDockerImageTag=${{ env.IMAGE_TAG }}
           --no-fail-on-empty-changeset
