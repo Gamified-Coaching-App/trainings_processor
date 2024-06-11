@@ -2,10 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template to deploy Docker container in ECS using EC2 instances and VPC, with HTTPS support.
 
 Parameters:
-  # ExistingSecurityGroup:
-  #   Description: The existing security group ID for the Load Balancer.
-  #   Type: String
-  #   Default: sg-0d07c53e841cccbd8
+  ExistingSecurityGroup:
+    Description: The existing security group ID for the Load Balancer.
+    Type: String
+    Default: sg-0920e45f2eae4155a
     
   LatestAmiId:
     Description: The latest AMI ID for ECS-optimized Amazon Linux 2.
@@ -98,17 +98,29 @@ Resources:
   ECSInstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow HTTPS and SSH access to ECS instances
-      VpcId: !Ref VPC
+      GroupDescription: "Combined default and custom ECS instance security group"
+      VpcId: !Ref VPC  # Reference to your VPC resource
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
+        # Allow all protocols from instances with this same security group (replicating default SG behavior)
+        - IpProtocol: "-1"
+          UserIdGroupPairs:
+            - GroupId: !Ref CombinedSecurityGroup
+        # SSH access
+        - IpProtocol: "tcp"
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          CidrIp: "0.0.0.0/0"
+        # HTTPS access
+        - IpProtocol: "tcp"
+          FromPort: 443
+          ToPort: 443
+          CidrIp: "0.0.0.0/0"
+      # Define egress rules (allow all outbound traffic)
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: "0.0.0.0/0"
 
   EC2LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
