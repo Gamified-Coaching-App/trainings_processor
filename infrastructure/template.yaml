@@ -6,6 +6,7 @@ Parameters:
     Description: The existing security group ID for the Load Balancer.
     Type: String
     Default: sg-0d07c53e841cccbd8
+    
   LatestAmiId:
     Description: The latest AMI ID for ECS-optimized Amazon Linux 2.
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
@@ -149,7 +150,7 @@ Resources:
         - !Ref PublicSubnetOne
         - !Ref PublicSubnetTwo
       SecurityGroups:
-        - !Ref ExistingSecurityGroup
+        #- !Ref ExistingSecurityGroup
         - !Ref ECSInstanceSecurityGroup
 
   ECSTargetGroup:
