@@ -68,6 +68,11 @@ Resources:
     Properties:
       SubnetId: !Ref TrainingPublicSubnetTwo
       RouteTableId: !Ref TrainingPublicRouteTable
+  
+  TrainingECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: TrainingsProcessorCluster
 
   TrainingEC2InstanceRole:
     Type: AWS::IAM::Role
@@ -200,11 +205,6 @@ Resources:
           PortMappings:
             - ContainerPort: 80
               HostPort: 80
-              
-  TrainingECSCluster:
-    Type: AWS::ECS::Cluster
-    Properties:
-      ClusterName: TrainingsProcessorCluster
 
   TrainingECSService:
     Type: AWS::ECS::Service
