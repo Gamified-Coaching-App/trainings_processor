@@ -64,6 +64,7 @@ jobs:
   
     - name: Deploy CloudFormation Stack
       run: |
+        set -e
         aws cloudformation deploy \
           --template-file infrastructure/template.yaml \
           --stack-name TrainingsProcessorStack \
