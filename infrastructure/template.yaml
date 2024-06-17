@@ -198,8 +198,14 @@ Resources:
       Certificates:
         - CertificateArn: "arn:aws:acm:eu-west-2:590183778243:certificate/14647f6d-bd8f-44cf-ad49-fe24ac123ab4"
 
+  TrainingProcessorLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: TrainingsProcessor
+
   TrainingTaskDefinition:
     Type: AWS::ECS::TaskDefinition
+    DependsOn: TrainingProcessorLogGroup
     Properties:
       Family: training-processing-task
       Cpu: 256
