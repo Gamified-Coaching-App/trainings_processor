@@ -217,7 +217,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: TrainingsProcessor  # Specify your CloudWatch Logs group name here
+              awslogs-group: TrainingsProcessor  
               awslogs-region: eu-west-2  # Use the region where your CloudWatch Logs group is located
               awslogs-stream-prefix: ecs  # A prefix for the log stream name
 
