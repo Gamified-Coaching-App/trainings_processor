@@ -44,6 +44,25 @@ async function get_user_id(user_id_garmin) {
     });
 }
 
+async function makeAPICall(params) {
+    // Fetch API to make the POST request asynchronously
+    const endpoint = 'Coachi-Coach-a5qnJ8Z5zgRu-2060544039.eu-west-2.elb.amazonaws.com/workout';
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(params)
+        });
+        const data = await response.json();
+        console.log('Success:', data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 // The main handler function
 async function garmin_handler(request_body) {
     if (!request_body.activityDetails || !Array.isArray(request_body.activityDetails)) {
@@ -75,6 +94,10 @@ async function garmin_handler(request_body) {
 
         console.log("Blaze User ID in Session Object:", session.user_id);
         try {
+
+            const coaching_params = session.prepare_coaching_params();
+            makeAPICall(coaching_params);
+
             // Sending events to EventBridge
             const event_bridge_params = session.prepare_event_bridge_params();
             await event_bridge_client.send(new PutEventsCommand(event_bridge_params));

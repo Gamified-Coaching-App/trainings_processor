@@ -1,3 +1,5 @@
+# REQUIRED: ADD 'DEFAULT' IN SECURITY GROUP INGRESS
+
 AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudFormation template to deploy Docker container in ECS using EC2 instances and VPC, with HTTPS support.
 
@@ -212,6 +214,12 @@ Resources:
           PortMappings:
             - ContainerPort: 80
               HostPort: 80
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref TrainingsProcessor  # Specify your CloudWatch Logs group name here
+              awslogs-region: !Ref AWS::Region  # Use the region where your CloudWatch Logs group is located
+              awslogs-stream-prefix: ecs  # A prefix for the log stream name
 
   TrainingECSService:
     Type: AWS::ECS::Service

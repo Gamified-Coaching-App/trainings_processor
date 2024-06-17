@@ -113,6 +113,20 @@ const ActivityType = {
           return params;
       }
 
+      prepare_coaching_params() {
+        // This method prepares the params for a DynamoDB put operation.
+        const params = {
+                userId: this.user_id, // 'user_id' DynamoDB column header
+                sessionId: this.session_id.toString(), // 'session_id' DynamoDB column header
+                timestampLocal: this.timestamp_local, // 'timestamp_local' DynamoDB column header
+                activityType: this.activity_type, // 'activity_type' DynamoDB column header
+                heartRates: JSON.stringify(this.heart_rate), // 'heart_rate' DynamoDB column header, storing as JSON string
+                distances: JSON.stringify(this.distance_meters), // 'distance_meters' DynamoDB column header, storing as JSON string
+                duration: this.duration,
+            };
+        return params;
+    }
+
       format_timestamp(unix_timestamp) {
         // Create a Date object from the UNIX timestamp
         const date = new Date(unix_timestamp * 1000); // JavaScript requires milliseconds
