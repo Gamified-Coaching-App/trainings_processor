@@ -132,7 +132,7 @@ Resources:
     Properties:
       LaunchTemplateName: TrainingECSLaunchTemplate
       LaunchTemplateData:
-        InstanceType: t2.micro
+        InstanceType: t2.small
         ImageId: !Ref TrainingLatestAmiId
         IamInstanceProfile:
           Arn: !GetAtt TrainingEC2InstanceProfile.Arn
