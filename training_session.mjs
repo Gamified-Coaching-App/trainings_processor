@@ -122,7 +122,7 @@ const ActivityType = {
                 activityType: this.activity_type, // 'activity_type' DynamoDB column header
                 heartRates: JSON.stringify(this.heart_rate), // 'heart_rate' DynamoDB column header, storing as JSON string
                 distances: JSON.stringify(this.distance_meters), // 'distance_meters' DynamoDB column header, storing as JSON string
-                duration: this.duration,
+                duration: this.duration
             };
         return params;
     }
