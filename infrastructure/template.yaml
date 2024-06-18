@@ -235,11 +235,6 @@ Resources:
       DesiredCount: 1
       TaskDefinition: !Ref TrainingTaskDefinition
       LaunchType: EC2
-      NetworkConfiguration:
-        AwsvpcConfiguration:
-          Subnets:
-            - !Ref TrainingPublicSubnetOne
-            - !Ref TrainingPublicSubnetTwo
       LoadBalancers:
         - ContainerName: training-processing-container
           ContainerPort: 80
