@@ -77,37 +77,33 @@ Resources:
       ClusterName: TrainingsProcessorCluster
 
   TrainingEC2InstanceRole:
-  Type: AWS::IAM::Role
-  Properties:
-    AssumeRolePolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - Effect: Allow
-          Principal:
-            Service: 
-              - "ec2.amazonaws.com"
-          Action: 
-            - "sts:AssumeRole"
-    Path: "/"
-    ManagedPolicyArns:
-      - "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-    Policies:
-      - PolicyName: "EventBridgeAccess"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "events:PutEvents"
-              Resource: "*"
-      - PolicyName: "DynamoDBFullAccess"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Action:
-                - "dynamodb:*"
-              Resource: "arn:aws:dynamodb:*:*:table/*"
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: "ec2.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+      Policies:
+        - PolicyName: "EventBridgeAccess"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "events:PutEvents"
+                Resource: "*"
+        - PolicyName: "DynamoDBFullAccess"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "dynamodb:*"
+                Resource: "arn:aws:dynamodb:*:*:table/*"
        
   TrainingEC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
