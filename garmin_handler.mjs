@@ -38,7 +38,7 @@ async function get_user_id(user_id_garmin) {
                 }
             });
         }).on('error', (e) => {
-            console.error("HTTP request error:", e);
+            console.error("HTTPS request error:", e);
             reject(e);
         });
     });
@@ -46,7 +46,7 @@ async function get_user_id(user_id_garmin) {
 
 async function makeAPICall(params) {
     // Fetch API to make the POST request asynchronously
-    const endpoint = 'Coachi-Coach-a5qnJ8Z5zgRu-2060544039.eu-west-2.elb.amazonaws.com/workout';
+    const endpoint = 'http://Coachi-Coach-a5qnJ8Z5zgRu-2060544039.eu-west-2.elb.amazonaws.com/workout';
 
     try {
         const response = await fetch(endpoint, {
@@ -69,20 +69,27 @@ async function garmin_handler(request_body) {
         console.error("Invalid request format: 'activityDetails' is missing or not an array");
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "Invalid request format" }),
+            body: JSON.stringify({ message: "Invalid request format: 'activityDetails' is missing or not an array" }),
         };
     }
 
     for (const activity of request_body.activityDetails) {
         const user_id_garmin = activity.userId;
         if (!user_id_garmin) {
-            console.error("userId is missing in the payload.");
-            continue; // Skip this activity and move to the next
+            console.error("Invalid request format: userId is missing in the payload.");
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "userId is missing in the payload." }),
+            };
         }
 
         let user_id = user_id_cache[user_id_garmin];
         if (!user_id) {
-            user_id = await get_user_id(user_id_garmin);
+            try {
+                user_id = await get_user_id(user_id_garmin);
+            } catch (error) {
+                console.error("Error getting user ID:", error);
+            }
             user_id_cache[user_id_garmin] = user_id; // Store in cache
         } else {
             console.log("Found user_id in cache");
@@ -91,12 +98,11 @@ async function garmin_handler(request_body) {
         console.log("Blaze User ID:", user_id);
 
         const session = new TrainingSessionGarmin(activity, user_id);
-        console.log("Testing method access:", session.prepare_coaching_params());
 
         console.log("Blaze User ID in Session Object:", session.user_id);
         try {
-            const coaching_params = session.prepare_coaching_params();
-            await makeAPICall(coaching_params);
+            // const coaching_params = session.prepare_coaching_params();
+            // await makeAPICall(coaching_params);
 
             // Sending events to EventBridge
             const event_bridge_params = session.prepare_event_bridge_params();

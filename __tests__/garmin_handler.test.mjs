@@ -123,7 +123,7 @@ describe('Error testing', () => {
   
     expect(response).toEqual({
       statusCode: 400,
-      body: JSON.stringify({ message: "Invalid request format" })
+      body: JSON.stringify({ message: "Invalid request format: 'activityDetails' is missing or not an array" })
     });
   });
     it('should return error for missing userId', async () => {
@@ -142,8 +142,8 @@ describe('Error testing', () => {
         const response = await garmin_handler(invalidRequestBody);
     
         expect(response).toEqual({
-        statusCode: 200,
-        body: JSON.stringify({ message: "Processed successfully" })
+        statusCode: 400,
+        body: JSON.stringify({ message: "userId is missing in the payload." })
         });
     });  
 });
