@@ -72,5 +72,29 @@ jobs:
           --template-file infrastructure/template.yaml \
           --stack-name TrainingsProcessorStack \
           --capabilities CAPABILITY_NAMED_IAM \
-          --parameter-overrides TrainingDockerImageTag=${{ env.IMAGE_TAG }}
-          --no-fail-on-empty-changeset
+          --parameter-overrides TrainingDockerImageTag=${{ env.IMAGE_TAG }} \
+          --no-fail-on-empty-changeset \
+          --region eu-west-2 \
+          --debug
+    
+    - name: Check CloudFormation Outputs
+      run: |
+        aws cloudformation describe-stacks \
+          --stack-name TrainingsProcessorStack \
+          --query "Stacks[0].Outputs" \
+          --output json
+
+    - name: Update ECS deployment
+      run: |
+        ecs_service_name=$(aws cloudformation describe-stacks \
+          --stack-name TrainingsProcessorStack \
+          --query "Stacks[0].Outputs[?OutputKey=='TrainingECSServiceName'].OutputValue" \
+          --output text)
+        cluster_name=$(aws cloudformation describe-stacks \
+          --stack-name TrainingsProcessorStack \
+          --query "Stacks[0].Outputs[?OutputKey=='TrainingECSClusterName'].OutputValue" \
+          --output text)
+        aws ecs update-service \
+          --cluster $cluster_name \
+          --service $ecs_service_name \
+          --force-new-deployment
