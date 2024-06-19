@@ -24,8 +24,15 @@ app.post('/update/garmin', (req, res) => {
 app.post('/subjparams', (req, res) => {
     res.status(200).send({ message: "Processing started" });
     const { userId, sessionId, timestampLocal, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = req.body;
-    console.log("Starting insertion of subjective parameters with request body:", req.body);
-    if (!userId || !timestampLocal || !sessionId || !perceivedExertion || !perceivedRecovery || !perceivedTrainingSuccess) { 
+    console.log("Starting insertion of subjective parameters with request body: ", 
+        "userId: ", userId, 
+        ", sessionId: ", sessionId, 
+        ", timestampLocal: ", timestampLocal, 
+        ", perceivedExertion: ", perceivedExertion, 
+        ", perceivedRecovery: ", perceivedRecovery, 
+        ", perceivedTrainingSuccess: ", perceivedTrainingSuccess);
+    if (!userId || !timestampLocal || !sessionId || 
+        perceivedExertion === undefined || perceivedRecovery === undefined || perceivedTrainingSuccess === undefined) { 
         console.error("Missing required fields in request body");
         return;
     }
