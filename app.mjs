@@ -30,12 +30,12 @@ app.post('/subjparams', (req, res) => {
         return;
     }
     sendSubjParamsToCoaching({userId : userId, sessionId : sessionId, timestampLocal : timestampLocal, perceivedExertion : perceivedExertion, perceivedRecovery : perceivedRecovery, perceivedTrainingSuccess : perceivedTrainingSuccess}).then(response => {
-    console.log("Processing completed successfully:", response);
+    console.log("Successfully sent subjective params to coaching:", response);
     }).catch(error => {
         console.error("Error sending subjective params to coaching:", error);
     });
     updateSubjParamsInDb(dynamodbClient, {userId : userId, sessionId : sessionId, perceivedExertion : perceivedExertion, perceivedRecovery : perceivedRecovery, perceivedTrainingSuccess : perceivedTrainingSuccess}).then(response => {
-        console.log("Processing completed successfully:", response);
+        console.log("Successfully inserted subjective params to DB:", response);
     }).catch(error => {
         console.error("Error inserting subjective params to DB:", error);
     });    

@@ -1,3 +1,5 @@
+import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+
 async function sendSubjParamsToCoaching(data) {
     const { userId, timestampLocal, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = data;
     const endpoint = 'http://Coachi-Coach-bgtKlzJd2GCw-908383528.eu-west-2.elb.amazonaws.com/subjparams';
@@ -26,7 +28,7 @@ async function sendSubjParamsToCoaching(data) {
 
 async function updateSubjParamsInDb(dynamoDbClient, data) {
     const { userId, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = data;
-    
+
     const params = {
         TableName: 'trainings_log',
         Key: {
@@ -48,7 +50,8 @@ async function updateSubjParamsInDb(dynamoDbClient, data) {
     };
 
     try {
-        const result = await dynamoDbClient.update(params).promise();
+        const command = new UpdateCommand(params);
+        const result = await dynamoDbClient.send(command);
         console.log('Successfully updated subjective parameters', result);
     } catch (error) {
         console.error('Error:', error);
