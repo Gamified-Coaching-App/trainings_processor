@@ -46,7 +46,6 @@ jest.mock('https', () => ({
     const mockMethods = {
       prepare_event_bridge_params: jest.fn().mockReturnValue({}),
       prepare_dynamo_db_log_params: jest.fn().mockReturnValue({}),
-      prepare_dynamo_db_aggregate_params: jest.fn().mockReturnValue({}),
       prepare_coaching_params: jest.fn()
     };
     // Return the constructor mock
@@ -112,7 +111,6 @@ describe('TrainingSessionGarmin Class Behavior', () => {
       // Verify that each method required for preparing the event data is called
       expect(mockMethodsUsed.prepare_event_bridge_params).toHaveBeenCalled();
       expect(mockMethodsUsed.prepare_dynamo_db_log_params).toHaveBeenCalled();
-      expect(mockMethodsUsed.prepare_dynamo_db_aggregate_params).toHaveBeenCalled();
     });
   });
   
