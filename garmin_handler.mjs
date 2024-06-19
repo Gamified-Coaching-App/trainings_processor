@@ -102,9 +102,6 @@ async function garmin_handler(request_body) {
         console.log("Blaze User ID in Session Object:", session.user_id);
         try {
 
-            const coaching_params = session.prepare_coaching_params();
-            await makeCoachingAPICall(coaching_params);
-
             // Sending events to EventBridge
             const event_bridge_params = session.prepare_event_bridge_params();
             await event_bridge_client.send(new PutEventsCommand(event_bridge_params));
@@ -115,10 +112,9 @@ async function garmin_handler(request_body) {
             await dynamodb_doc_client.send(new PutCommand(dynamodb_params_log));
             console.log("Data inserted into DynamoDB trainings log successfully.");
 
-            // Updating an item in DynamoDB
-            const dynamodb_params_aggregate = session.prepare_dynamo_db_aggregate_params('trainings_aggregates');
-            await dynamodb_doc_client.send(new UpdateCommand(dynamodb_params_aggregate));
-            console.log("Data inserted into DynamoDB trainings aggregates successfully.");
+            const coaching_params = session.prepare_coaching_params();
+            await makeCoachingAPICall(coaching_params);
+            console.log("Data send to coaching module succesfully.");
 
         } catch (error) {
             console.error("Error processing data:", error);

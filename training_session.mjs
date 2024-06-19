@@ -118,7 +118,7 @@ const ActivityType = {
         const params = {
             userId: this.user_id,
             sessionId: this.session_id.toString(),
-            timestampLocal: this.timestamp_local,
+            timestampLocal: this.timestamp_local.slice(0, 10),
             activityType: this.activity_type,
             heartRates: JSON.stringify(this.heart_rate),
             distances: JSON.stringify(this.distance_meters),
