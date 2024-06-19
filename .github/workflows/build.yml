@@ -8,8 +8,8 @@ on:
 env:
   IMAGE_TAG: ghcr.io/gamified-coaching-app/training_processing_api:v1.0
   IMAGE_TAGE_NAME: TrainingDockerImageTag
-  CLUSTER_NAME: TrainingProcessorCluster
-  STACK_NAME: TrainingProcessorStack
+  CLUSTER_NAME: TrainingsProcessorCluster
+  STACK_NAME: TrainingsProcessorStack
 
 jobs:
   unit_testing:
