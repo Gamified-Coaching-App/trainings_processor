@@ -124,7 +124,6 @@ const ActivityType = {
             distances: JSON.stringify(this.distance_meters),
             duration: this.duration
         };
-        console.log('Coaching Params:', params)
         return params;
     }
 

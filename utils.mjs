@@ -1,4 +1,5 @@
-async function sendSubjParamsToCoaching(userId, timestampLocal, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess) {
+async function sendSubjParamsToCoaching(data) {
+    const { userId, timestampLocal, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = data;
     const endpoint = 'http://Coachi-Coach-bgtKlzJd2GCw-908383528.eu-west-2.elb.amazonaws.com/subjparams';
     const params = {
         userId: userId,
@@ -23,7 +24,9 @@ async function sendSubjParamsToCoaching(userId, timestampLocal, sessionId, perce
     }
 }
 
-async function updateSubjParamsInDb(dynamoDbClient, userId, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess) {
+async function updateSubjParamsInDb(dynamoDbClient, data) {
+    const { userId, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = data;
+    
     const params = {
         TableName: 'trainings_log',
         Key: {

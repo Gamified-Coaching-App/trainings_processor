@@ -253,3 +253,15 @@ Resources:
         - ContainerName: training-processing-container
           ContainerPort: 80
           TargetGroupArn: !Ref TrainingECSTargetGroup
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 0
+        MaximumPercent: 100
+
+Outputs:
+  TrainingECSServiceName:
+    Description: The name of the ECS service
+    Value: !Ref TrainingECSService
+
+  TrainingECSClusterName:
+    Description: The name of the ECS cluster
+    Value: !Ref TrainingECSCluster

@@ -22,16 +22,19 @@ app.post('/update/garmin', (req, res) => {
 });
 
 app.post('/subjparams', (req, res) => {
-    // Immediately respond to the request
     res.status(200).send({ message: "Processing started" });
-    // Process the request body asynchronously
+    const { userId, sessionId, timestampLocal, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = req.body;
     console.log("Starting insertion of subjective parameters with request body:", req.body);
-    sendSubjParamsToCoaching(req.body.userId, req.body.sessionId, req.body.perceivedExertion, req.body.perceivedRecovery, req.body.perceivedTrainingSuccess).then(response => {
-        console.log("Processing completed successfully:", response);
+    if (!userId || !timestampLocal || !sessionId || !perceivedExertion || !perceivedRecovery || !perceivedTrainingSuccess) { 
+        console.error("Missing required fields in request body");
+        return;
+    }
+    sendSubjParamsToCoaching({userId : userId, sessionId : sessionId, timestampLocal : timestampLocal, perceivedExertion : perceivedExertion, perceivedRecovery : perceivedRecovery, perceivedTrainingSuccess : perceivedTrainingSuccess}).then(response => {
+    console.log("Processing completed successfully:", response);
     }).catch(error => {
         console.error("Error sending subjective params to coaching:", error);
     });
-    updateSubjParamsInDb(dynamodbClient, req.body.userId, req.body.sessionId, req.body.perceivedExertion, req.body.perceivedRecovery, req.body.perceivedTrainingSuccess).then(response => {
+    updateSubjParamsInDb(dynamodbClient, {userId : userId, sessionId : sessionId, perceivedExertion : perceivedExertion, perceivedRecovery : perceivedRecovery, perceivedTrainingSuccess : perceivedTrainingSuccess}).then(response => {
         console.log("Processing completed successfully:", response);
     }).catch(error => {
         console.error("Error inserting subjective params to DB:", error);
