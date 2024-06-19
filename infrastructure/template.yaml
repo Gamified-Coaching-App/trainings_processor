@@ -118,7 +118,6 @@ Resources:
       GroupDescription: "Combined default and custom ECS instance security group"
       VpcId: !Ref TrainingVPC
       SecurityGroupIngress:
-        # Remove the self-referencing rule from here
         - IpProtocol: "tcp"
           FromPort: 22
           ToPort: 22

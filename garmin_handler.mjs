@@ -3,7 +3,7 @@ import { EventBridgeClient, PutEventsCommand } from "@aws-sdk/client-eventbridge
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import https from 'https';
-import { TrainingSessionGarmin } from './training_session.mjs';
+import { TrainingSessionGarmin, TrainingSession} from './training_session.mjs';
 
 // Initialize the AWS SDK v3 clients
 const event_bridge_client = new EventBridgeClient({ region: 'eu-west-2' });
@@ -44,9 +44,9 @@ async function get_user_id(user_id_garmin) {
     });
 }
 
-async function makeAPICall(params) {
+async function makeCoachingAPICall(params) {
     // Fetch API to make the POST request asynchronously
-    const endpoint = 'http://Coachi-Coach-a5qnJ8Z5zgRu-2060544039.eu-west-2.elb.amazonaws.com/workout';
+    const endpoint = 'http://Coachi-Coach-bgtKlzJd2GCw-908383528.eu-west-2.elb.amazonaws.com/workout';
 
     try {
         const response = await fetch(endpoint, {
@@ -101,8 +101,9 @@ async function garmin_handler(request_body) {
 
         console.log("Blaze User ID in Session Object:", session.user_id);
         try {
-            // const coaching_params = session.prepare_coaching_params();
-            // await makeAPICall(coaching_params);
+
+            const coaching_params = session.prepare_coaching_params();
+            await makeCoachingAPICall(coaching_params);
 
             // Sending events to EventBridge
             const event_bridge_params = session.prepare_event_bridge_params();

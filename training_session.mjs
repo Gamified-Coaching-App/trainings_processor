@@ -5,7 +5,7 @@ const ActivityType = {
     OTHER: 'OTHER'
   };
   
-  class TrainingSession {
+  export class TrainingSession {
       constructor(user_id, session_id, activity_name, timestamp_local, activity_type, duration_in_seconds, average_heart_rate_in_bpm, average_speed_km_h, average_pace_min_per_km, active_calories, distance_meters_total, max_heart_rate_in_bpm, max_pace_min_per_km, max_speed_km_h, elevation_gain_meters_total, elevation_gain_meters, speed_km_h, heart_rate, temperature, distance_meters, laps_data) {
           this.user_id = user_id;
           this.session_id = session_id;
@@ -116,14 +116,14 @@ const ActivityType = {
       prepare_coaching_params() {
         // This method prepares the params for a DynamoDB put operation.
         const params = {
-                userId: this.user_id, // 'user_id' DynamoDB column header
-                sessionId: this.session_id.toString(), // 'session_id' DynamoDB column header
-                timestampLocal: this.timestamp_local, // 'timestamp_local' DynamoDB column header
-                activityType: this.activity_type, // 'activity_type' DynamoDB column header
-                heartRates: JSON.stringify(this.heart_rate), // 'heart_rate' DynamoDB column header, storing as JSON string
-                distances: JSON.stringify(this.distance_meters), // 'distance_meters' DynamoDB column header, storing as JSON string
-                duration: this.duration
-            };
+            userId: this.user_id,
+            sessionId: this.session_id.toString(),
+            timestampLocal: this.timestamp_local,
+            activityType: this.activity_type,
+            heartRates: JSON.stringify(this.heart_rate),
+            distances: JSON.stringify(this.distance_meters),
+            duration: this.duration
+        };
         return params;
     }
 
@@ -159,7 +159,6 @@ const ActivityType = {
         return `${hours_str}:${minutes_str}:${seconds_str}`;
     }
     
-  
       prepare_dynamo_db_aggregate_params(table_name) {
           const { year, week } = this.get_year_week_from_timestamp(this.timestamp_local_seconds);
           // Zero-pad the week number for lexical comparison purposes if necessary

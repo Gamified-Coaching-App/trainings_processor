@@ -47,6 +47,7 @@ jest.mock('https', () => ({
       prepare_event_bridge_params: jest.fn().mockReturnValue({}),
       prepare_dynamo_db_log_params: jest.fn().mockReturnValue({}),
       prepare_dynamo_db_aggregate_params: jest.fn().mockReturnValue({}),
+      prepare_coaching_params: jest.fn()
     };
     // Return the constructor mock
     return {
@@ -67,6 +68,10 @@ const mockRequestBody = {
         },
     ]
 };
+
+global.fetch = jest.fn(() => Promise.resolve({
+  json: () => Promise.resolve({ success: true }) // Mock successful response
+}));
 
 describe('Garmin Handler Functionality', () => {
     // Testing the handler's response to a valid request
