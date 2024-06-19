@@ -1,7 +1,7 @@
 import express from 'express';
 import { garmin_handler } from './garmin_handler.mjs';
 import { sendSubjParamsToCoaching, updateSubjParamsInDb } from './utils.mjs';
-import { DynamoDBClient } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 const dynamodbClient = new DynamoDBClient({ region: 'eu-west-2' });
 
 const app = express();
@@ -24,7 +24,6 @@ app.post('/update/garmin', (req, res) => {
 app.post('/subjparams', (req, res) => {
     // Immediately respond to the request
     res.status(200).send({ message: "Processing started" });
-
     // Process the request body asynchronously
     console.log("Starting insertion of subjective parameters with request body:", req.body);
     sendSubjParamsToCoaching(req.body.userId, req.body.sessionId, req.body.perceivedExertion, req.body.perceivedRecovery, req.body.perceivedTrainingSuccess).then(response => {
