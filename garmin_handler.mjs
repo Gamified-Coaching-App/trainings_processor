@@ -114,6 +114,7 @@ async function garmin_handler(request_body) {
 
             const coaching_params = session.prepare_coaching_params();
             await makeCoachingAPICall(coaching_params);
+            console.log('Coaching Params:', coaching_params)
             console.log("Data send to coaching module succesfully.");
 
         } catch (error) {

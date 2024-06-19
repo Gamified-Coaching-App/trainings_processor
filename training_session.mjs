@@ -107,7 +107,7 @@ const ActivityType = {
                   heart_rate: JSON.stringify(this.heart_rate), // 'heart_rate' DynamoDB column header, storing as JSON string
                   temperature: JSON.stringify(this.temperature), // 'temperature' DynamoDB column header, storing as JSON string
                   distance_meters: JSON.stringify(this.distance_meters), // 'distance_meters' DynamoDB column header, storing as JSON string
-                  laps_data: JSON.stringify(this.laps_data) // 'laps_data' DynamoDB column header, storing as JSON string
+                  laps_data: JSON.stringify(this.laps_data), // 'laps_data' DynamoDB column header, storing as JSON string
               },
           };
           return params;
@@ -124,6 +124,7 @@ const ActivityType = {
             distances: JSON.stringify(this.distance_meters),
             duration: this.duration
         };
+        console.log('Coaching Params:', params)
         return params;
     }
 
@@ -157,55 +158,6 @@ const ActivityType = {
     
         // Concatenate into HH:MM:SS format
         return `${hours_str}:${minutes_str}:${seconds_str}`;
-    }
-    
-      prepare_dynamo_db_aggregate_params(table_name) {
-          const { year, week } = this.get_year_week_from_timestamp(this.timestamp_local_seconds);
-          // Zero-pad the week number for lexical comparison purposes if necessary
-          const week_string = week < 10 ? `0${week}` : `${week}`;
-          const user_activity_key = `${this.user_id}#${this.activity_type}`;
-          const year_week_key = `${year}#${week_string}`;
-        console.log("Year-Week Key: ", year_week_key);
-          // Adjusting the parameters for DynamoDB to match the proposed schema
-          const params = {
-              TableName: table_name,
-              Key: {
-                  'user_id#activity_type': user_activity_key, // Partition key
-                  'year#week': year_week_key, // Sort key
-              },
-              UpdateExpression: 'ADD km :km, hours :hours',
-              ExpressionAttributeValues: {
-                  ':km': this.round(this.distance_meters_total / 1000,2), // Convert meters to kilometers
-                  ':hours': this.round(this.duration_in_seconds / 3600, 2), // Convert seconds to hours
-              },
-          };
-      
-          return params;
-      }
-  
-      get_year_week_from_timestamp(timestamp) {
-        const date = new Date(timestamp * 1000); // Convert UNIX timestamp to milliseconds
-        date.setHours(0, 0, 0, 0); // Normalize the time part
-        
-        // ISO 8601 week number calculation requires finding the nearest Thursday
-        const dayOfWeek = date.getDay();
-        // Shift the date to the nearest Thursday to align with ISO 8601's requirement
-        // that the first week of the year includes January 4th.
-        date.setDate(date.getDate() - dayOfWeek + 4);
-    
-        // Calculate the first day of this year
-        const yearStart = new Date(date.getFullYear(), 0, 1);
-    
-        // Correct the yearStart in case we're dealing with a week belonging to the previous year
-        if (date < yearStart) {
-            yearStart.setFullYear(yearStart.getFullYear() - 1);
-        }
-        yearStart.setDate(yearStart.getDate() - yearStart.getDay() + 4); // Align year start to the first Thursday
-    
-        // Calculate full weeks to the nearest Thursday
-        const week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
-
-        return { year: date.getFullYear(), week };
     }
   }
   
