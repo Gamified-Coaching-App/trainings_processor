@@ -84,17 +84,27 @@ jobs:
           --query "Stacks[0].Outputs" \
           --output json
 
+    - name: Get ECS Service Name
+      id: get_ecs_service_name
+      run: |
+        ecs_service_name=$(aws ecs list-services \
+          --cluster TrainingsProcessorCluster \
+          --query "serviceArns[0]" \
+          --output text)
+        echo "ecs_service_name=${ecs_service_name##*/}" >> $GITHUB_ENV
+
+      
     - name: Update ECS deployment
       run: |
-        ecs_service_name=$(aws cloudformation describe-stacks \
-          --stack-name TrainingsProcessorStack \
-          --query "Stacks[0].Outputs[?OutputKey=='TrainingECSServiceName'].OutputValue" \
-          --output text)
-        cluster_name=$(aws cloudformation describe-stacks \
-          --stack-name TrainingsProcessorStack \
-          --query "Stacks[0].Outputs[?OutputKey=='TrainingECSClusterName'].OutputValue" \
-          --output text)
+        set -e
         aws ecs update-service \
-          --cluster $cluster_name \
-          --service $ecs_service_name \
+          --cluster TrainingsProcessorCluster \
+          --service ${{ env.ecs_service_name }} \
           --force-new-deployment
+      shell: /usr/bin/bash -e {0}
+      env:
+        IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        AWS_DEFAULT_REGION: eu-west-2
+        AWS_REGION: eu-west-2
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
