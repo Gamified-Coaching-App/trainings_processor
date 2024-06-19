@@ -1,8 +1,9 @@
-async function sendSubjParamsToCoaching(userId, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess) {
+async function sendSubjParamsToCoaching(userId, timestampLocal, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess) {
     const endpoint = 'http://Coachi-Coach-bgtKlzJd2GCw-908383528.eu-west-2.elb.amazonaws.com/subjparams';
     const params = {
         userId: userId,
         sessionId: sessionId,
+        timestampLocal: timestampLocal.slice(0,10),
         perceivedExertion: perceivedExertion,
         perceivedRecovery: perceivedRecovery,
         perceivedTrainingSuccess: perceivedTrainingSuccess
