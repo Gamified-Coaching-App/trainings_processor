@@ -38,7 +38,7 @@ app.post('/subjparams', cors(corsOptions), (req, res) => {
         console.error("JWT token is missing in Authorization header");
         return;
     }
-    userId = getUserIdFromJwt(jwt);
+    const userId = getUserIdFromJwt(jwt);
     const { sessionId, timestampLocal, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = req.body;
     console.log("Starting insertion of subjective parameters with request body: ", 
         "userId: ", userId, 
