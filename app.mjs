@@ -33,8 +33,7 @@ app.post('/update/garmin', (req, res) => {
 app.options('/subjparams', cors(corsOptions)); 
 app.post('/subjparams', cors(corsOptions), (req, res) => {
     res.status(200).send({ message: "Processing started" });
-    console.log("authorization header: ", req.headers.authorization);
-    jwt = req.headers.authorization?.split(' ')[1];
+    const jwt = req.headers.authorization?.split(' ')[1];
     if (!jwt) {
         console.error("JWT token is missing in Authorization header");
         return;
