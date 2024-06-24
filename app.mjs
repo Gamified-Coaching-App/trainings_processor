@@ -1,11 +1,19 @@
 import express from 'express';
+import cors from 'cors';
 import { garmin_handler } from './garmin_handler.mjs';
-import { sendSubjParamsToCoaching, updateSubjParamsInDb } from './utils.mjs';
+import { sendSubjParamsToCoaching, updateSubjParamsInDb, getUserIdFromJwt } from './utils.mjs';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 const dynamodbClient = new DynamoDBClient({ region: 'eu-west-2' });
 
 const app = express();
 app.use(express.json({ limit: '200mb' }));
+
+const corsOptions = {
+    origin: '*',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+    credentials: true,
+};
 
 // POST endpoint that uses the garmin_handler
 app.post('/update/garmin', (req, res) => {
@@ -21,9 +29,15 @@ app.post('/update/garmin', (req, res) => {
     });
 });
 
-app.post('/subjparams', (req, res) => {
+app.post('/subjparams', cors(corsOptions), (req, res) => {
     res.status(200).send({ message: "Processing started" });
-    const { userId, sessionId, timestampLocal, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = req.body;
+    jwt = req.headers.authorization?.split(' ')[1];
+    if (!jwt) {
+        console.error("JWT token is missing in Authorization header");
+        return;
+    }
+    userId = getUserIdFromJwt(jwt);
+    const { sessionId, timestampLocal, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = req.body;
     console.log("Starting insertion of subjective parameters with request body: ", 
         "userId: ", userId, 
         ", sessionId: ", sessionId, 
