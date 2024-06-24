@@ -29,6 +29,7 @@ app.post('/update/garmin', (req, res) => {
     });
 });
 
+// OPTIONS endpoint for /subjparams for frontend requests
 app.options('/subjparams', cors(corsOptions)); 
 app.post('/subjparams', cors(corsOptions), (req, res) => {
     res.status(200).send({ message: "Processing started" });
