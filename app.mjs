@@ -10,7 +10,7 @@ app.use(express.json({ limit: '200mb' }));
 
 const corsOptions = {
     origin: '*',
-    methods: 'GET,POST,PUT,DELETE',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
 };
@@ -29,6 +29,7 @@ app.post('/update/garmin', (req, res) => {
     });
 });
 
+app.options('/subjparams', cors(corsOptions)); 
 app.post('/subjparams', cors(corsOptions), (req, res) => {
     res.status(200).send({ message: "Processing started" });
     jwt = req.headers.authorization?.split(' ')[1];
