@@ -1,4 +1,5 @@
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import jwt from 'jsonwebtoken';
 
 async function sendSubjParamsToCoaching(data) {
     const { userId, timestampLocal, sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess } = data;
@@ -58,4 +59,9 @@ async function updateSubjParamsInDb(dynamoDbClient, data) {
     }
 }
 
-export { sendSubjParamsToCoaching, updateSubjParamsInDb };
+function getUserIdFromJwt(token) {
+    const decoded = jwt.decode(token);
+    return decoded.sub;
+}
+
+export { sendSubjParamsToCoaching, updateSubjParamsInDb, getUserIdFromJwt };
